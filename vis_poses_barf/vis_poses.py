@@ -7,18 +7,6 @@ from scipy.spatial.transform import Rotation
 
 def get_camera_mesh(pose,depth=1):
     
-    # vertices = np.array([[-0.5,-0.5,1],
-    #                          [0.5,-0.5,1],
-    #                          [0.5,0.5,1],
-    #                          [-0.5,0.5,1],
-    #                          [0,0,0]])*depth
-    # faces = np.array([[0,1,2],
-    #                       [0,2,3],
-    #                       [0,1,4],
-    #                       [1,2,4],
-    #                       [2,3,4],
-    #                       [3,0,4]])
-    
     vertices = torch.tensor([[-0.5,-0.5,1],
                              [0.5,-0.5,1],
                              [0.5,0.5,1],
@@ -30,7 +18,9 @@ def get_camera_mesh(pose,depth=1):
                           [1,2,4],
                           [2,3,4],
                           [3,0,4]])
-    vertices = camera0.cam2world(vertices[None],pose)
+    # vertices = camera0.cam2world(vertices[None],pose)
+    vertices_hom = camera0.to_hom(vertices[None])
+    vertices = vertices_hom@pose.transpose(-1,-2)
     wireframe = vertices[:,[0,1,2,3,0,4,1,2,4,3]]
     return vertices,faces,wireframe
 
@@ -136,9 +126,10 @@ def vis_cameras(group, name, poses=[],colors=["blue"],plot_dist=False,step=0):
         eid=win_name,
         layout=dict(
             title="({})".format(step),
-            autosize=True,
+            # autosize=True,
+            scene_aspectmode='cube',
             margin=dict(l=30,r=30,b=30,t=30,),
-            showlegend=False,
+            # showlegend=False,
             yaxis=dict(
                 scaleanchor="x",
                 scaleratio=1,
@@ -149,7 +140,7 @@ def vis_cameras(group, name, poses=[],colors=["blue"],plot_dist=False,step=0):
     
 if __name__ == '__main__':
     
-    poses_path = '/home/perple/czbbzc/repos/nerfacto_online/vis_poses/mao_quat.txt'
+    poses_path = './vis_poses_barf/mao_mat.txt'
     
     poses = np.loadtxt(poses_path, dtype=np.float32)
     
@@ -170,6 +161,6 @@ if __name__ == '__main__':
         poses_trans = np.array(poses_trans)
         
     
-    poses_trans = torch.from_numpy(poses_trans[::1][:,:3,:])    
+    poses_trans = torch.from_numpy(poses_trans[::5][:,:3,:])    
     
     vis_cameras('mao', '1', poses=[poses_trans])

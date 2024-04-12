@@ -9,11 +9,12 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
     box = trimesh.primitives.Box(extents=[2*bound]*3).as_outline()
     box.colors = np.array([[128, 128, 128]] * len(box.entities))
     objects = [axes, box]
+    # objects = []
 
-    if bound > 1:
-        unit_box = trimesh.primitives.Box(extents=[2]*3).as_outline()
-        unit_box.colors = np.array([[128, 128, 128]] * len(unit_box.entities))
-        objects.append(unit_box)
+    # if bound > 1:
+    #     unit_box = trimesh.primitives.Box(extents=[2]*3).as_outline()
+    #     unit_box.colors = np.array([[128, 128, 128]] * len(unit_box.entities))
+    #     objects.append(unit_box)
 
     for pose in poses:
         # a camera is visualized with 8 line segments.
@@ -46,10 +47,10 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
 
 if __name__ == '__main__':
     
-    poses_path = '/home/perple/czbbzc/repos/nerfacto_online/vis_poses/zkz_mat.txt'
-    
+    poses_path = './vis_poses_ngp/mao_mat.txt'
+
     poses = np.loadtxt(poses_path, dtype=np.float32).reshape(-1, 4, 4)
-    
-    poses = poses[::5]
-    
+
+    poses = poses[::2]
+
     visualize_poses(poses)
