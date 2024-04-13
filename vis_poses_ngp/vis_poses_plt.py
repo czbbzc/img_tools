@@ -1,13 +1,36 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.spatial.transform import Rotation
+
 
 
 def visualize_poses(poses, size=0.1, bound=1, points=None):
     # poses: [B, 4, 4]
     
+    if poses.shape[-1] == 7:
+        poses_trans = []
+        for i in range(poses.shape[0]):
+            trans = poses[i, :3]
+            quat = poses[i, 3:]
+            rot = Rotation.from_quat(quat).as_matrix()
+            matrix_pose = np.eye(4, dtype=np.float32)
+            matrix_pose[:3, :3] = rot
+            matrix_pose[:3, 3] = trans
+            
+            trans_pose_temp = np.linalg.inv(matrix_pose)
+            poses_trans.append(trans_pose_temp)
+        poses_trans = np.array(poses_trans)        
+
+    else:
+        poses_trans = poses.reshape(-1, 4, 4)
+    
+    poses = poses_trans
+    
     pos_min = np.min(poses)
     pos_max = np.max(poses)
+    
+    size = size * pos_max
     
     #定义坐标轴
     fig = plt.figure()
@@ -60,10 +83,10 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
 
 if __name__ == '__main__':
     
-    poses_path = './vis_poses_ngp/mao_mat.txt'
+    poses_path = './vis_poses_barf/autel_bicycle_mat.txt'
 
     poses = np.loadtxt(poses_path, dtype=np.float32).reshape(-1, 4, 4)
 
-    poses = poses[::4]
+    poses = poses[::1]
 
     visualize_poses(poses)
