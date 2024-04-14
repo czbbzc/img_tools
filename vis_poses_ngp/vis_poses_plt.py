@@ -78,7 +78,7 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
     #     colors[:, 3] = 30 # transparent
     #     objects.append(trimesh.PointCloud(points, colors))
 
-    plt.show()
+    # plt.show()
     
 
 if __name__ == '__main__':
