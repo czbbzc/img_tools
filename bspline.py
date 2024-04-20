@@ -47,13 +47,18 @@ def interpolate_b_spline(data, num_samples):
 # Example usage:
 # data = [(1, 2, 3, 0.707, 0, 0.707, 0), (2, 3, 4, 0.5, 0.5, 0.5, 0.5), (3, 4, 5, 0, 0.707, 0, 0.707)]
 
-init_poses = np.loadtxt('poses/autel_building_quat.txt')
+init_poses = np.loadtxt('poses/mao_quat.txt')
 fs = np.linspace(0, len(init_poses)-1, 6, dtype=np.uint8)
 data = init_poses[fs]
 
+# data = np.array([(0, 0, 0, 0, 0, 0, 1), 
+#         (1, 0, 0, 1, 0, 0, 0), 
+#         (1, 1, 0, 0, 1, 0, 0), 
+#         (0, 1, 0, 0, 0, 1, 0)], dtype=np.float32)
+
 visualize_poses(data)
 
-num_samples = 12
+num_samples = 90
 interpolated_data = interpolate_b_spline(data, num_samples)
 
 visualize_poses(np.array(interpolated_data))

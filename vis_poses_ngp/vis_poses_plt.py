@@ -18,7 +18,8 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
             matrix_pose[:3, :3] = rot
             matrix_pose[:3, 3] = trans
             
-            trans_pose_temp = np.linalg.inv(matrix_pose)
+            # trans_pose_temp = np.linalg.inv(matrix_pose)
+            trans_pose_temp = matrix_pose
             poses_trans.append(trans_pose_temp)
         poses_trans = np.array(poses_trans)        
 
@@ -27,8 +28,11 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
     
     poses = poses_trans
     
-    pos_min = np.min(poses)
-    pos_max = np.max(poses)
+    pos_min = np.min(poses[:,:,3])
+    pos_max = np.max(poses[:,:,3])
+    
+    # pos_min = np.min(poses)
+    # pos_max = np.max(poses)
     
     size = size * pos_max
     
@@ -42,21 +46,23 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
     ax1.set_ylabel('Y')
     ax1.set_zlabel('Z')
     
-    plt.xlim(pos_min,pos_max)
-    plt.ylim(pos_min,pos_max)
-    # ax1.zlim(pos_min,pos_max)
-
+    ax1.set_xlim(pos_min,pos_max)
+    ax1.set_ylim(pos_min,pos_max)
+    ax1.set_zlim(pos_min,pos_max)
+    
+    centers_all = []
 
     for pose in poses:
         # a camera is visualized with 8 line segments.
         
         pos = pose[:3, 3]
-        a = pos + size * pose[:3, 0] + size * pose[:3, 1] + size * pose[:3, 2]
-        b = pos - size * pose[:3, 0] + size * pose[:3, 1] + size * pose[:3, 2]
-        c = pos - size * pose[:3, 0] - size * pose[:3, 1] + size * pose[:3, 2]
-        d = pos + size * pose[:3, 0] - size * pose[:3, 1] + size * pose[:3, 2]
+        a = pos + size * pose[:3, 0] + size * pose[:3, 1] + 2*size * pose[:3, 2]
+        b = pos - size * pose[:3, 0] + size * pose[:3, 1] + 2*size * pose[:3, 2]
+        c = pos - size * pose[:3, 0] - size * pose[:3, 1] + 2*size * pose[:3, 2]
+        d = pos + size * pose[:3, 0] - size * pose[:3, 1] + 2*size * pose[:3, 2]
         
         poses_all  = np.array([a, b, c, d])
+        centers_all.append(pos)
 
         dir = (a + b + c + d) / 4 - pos
         dir = dir / (np.linalg.norm(dir) + 1e-8)
@@ -70,6 +76,8 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
             t2 = (i+1)%4
             ax1.plot([poses_all[t1][0], poses_all[t2][0]], [poses_all[t1][1], poses_all[t2][1]], [poses_all[t1][2], poses_all[t2][2]], color='r', linewidth=0.5)
         
+    centers_all = np.array(centers_all)
+    ax1.plot(centers_all[:,0], centers_all[:,1], centers_all[:,2], color='b', linewidth=0.5)
 
     # if points is not None:
     #     print('[visualize points]', points.shape, points.dtype, points.min(0), points.max(0))
