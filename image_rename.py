@@ -8,7 +8,8 @@ def rename_images(folder_path, new_folder_path):
     #     print(file)
     
     # 排序
-    files.sort()
+    # files.sort()
+    files.sort(key=lambda x: int(x.split('_')[-1].split('.')[0]))
     
     for file in files:
         print(file)
@@ -18,7 +19,7 @@ def rename_images(folder_path, new_folder_path):
         # 检查文件是否为图片文件
         if file.endswith(".jpg") or file.endswith(".png") or file.endswith(".jpeg"):
             # 构建新的文件名
-            new_file_name = f'main_new_{idx:0>5d}.png'
+            new_file_name = f'main_{idx:0>5d}.jpg'
 
             # 构建原文件的完整路径
             old_file_path = os.path.join(folder_path, file)
@@ -34,8 +35,8 @@ def rename_images(folder_path, new_folder_path):
             
             
 # Specify the source and destination folders
-source_folder = "F:\\jianyin\\videos\\outdoors\\20240410autel_bicycle\\autel_bicycle20240410\\images"
-destination_folder = "F:\\jianyin\\videos\\outdoors\\20240410autel_bicycle\\autel_bicycle20240410\\images_new"
+source_folder = "F:\\jianyin\\videos\\outdoors\\2_24_xzs\\xzs_more_short_4k_3"
+destination_folder = "F:\\jianyin\\videos\\outdoors\\2_24_xzs\\xzs_more_short_4k_3_colmap_dense\\images"
 
 os.makedirs(destination_folder, exist_ok=True)
 
