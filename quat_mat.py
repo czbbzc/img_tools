@@ -18,11 +18,18 @@ def quat2mat(pose):
 
 def mat2quat(pose):
     """ convert 4x4 pose matrix to (t, q) """
-    q = Rotation.from_matrix(pose[:3, :3]).as_quat()
-    return -np.concatenate([pose[:3, 3], q], axis=0)
+    
+    trans_pose = np.linalg.inv(pose)    
+    trans = trans_pose[:3, 3]
+    rot = trans_pose[:3, :3]
+    quat = Rotation.from_matrix(rot).as_quat()
+    return np.concatenate([trans, quat], axis=0)
+    
+    # q = Rotation.from_matrix(pose[:3, :3]).as_quat()
+    # return -np.concatenate([pose[:3, 3], -q], axis=0)
 
-mat_data = np.loadtxt('vis_poses_barf/autel_bicycle_mat.txt').reshape(-1, 4, 4)
-quat_data = np.loadtxt('vis_poses_barf/autel_bicycle_quat.txt')
+mat_data = np.loadtxt('poses/autel_bicycle_mat.txt').reshape(-1, 4, 4)
+quat_data = np.loadtxt('poses/autel_bicycle_quat.txt')
 
 visualize_poses(mat_data)
 

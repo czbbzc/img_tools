@@ -47,10 +47,10 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
 
 if __name__ == '__main__':
     
-    poses_path = './vis_poses_ngp/mao_mat.txt'
+    poses_path = './poses/cabin_mat.txt'
 
     poses = np.loadtxt(poses_path, dtype=np.float32).reshape(-1, 4, 4)
 
-    poses = poses[::2]
+    # poses = poses[::1]
 
     visualize_poses(poses)

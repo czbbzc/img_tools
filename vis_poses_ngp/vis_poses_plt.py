@@ -55,11 +55,32 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
     for pose in poses:
         # a camera is visualized with 8 line segments.
         
+        # z
+        # pose[0, 2] = -pose[0, 2]
+        # pose[1, 2] = -pose[1, 2]
+        # pose[2, 0] = -pose[2, 0]
+        # pose[2, 1] = -pose[2, 1]
+        # pose[2, 3] = -pose[2, 3]
+        
+        # x
+        # pose[0, 1] = -pose[0, 1]
+        # pose[0, 2] = -pose[0, 2]
+        # pose[0, 3] = -pose[0, 3]
+        # pose[1, 0] = -pose[1, 0]
+        # pose[2, 0] = -pose[2, 0]
+        
+        # y
+        # pose[0, 1] = -pose[0, 1]
+        # pose[1, 0] = -pose[1, 0]            
+        # pose[1, 2] = -pose[1, 2]
+        # pose[1, 3] = -pose[1, 3]
+        # pose[2, 1] = -pose[2, 1]
+        
         pos = pose[:3, 3]
-        a = pos + size * pose[:3, 0] + size * pose[:3, 1] + 2*size * pose[:3, 2]
-        b = pos - size * pose[:3, 0] + size * pose[:3, 1] + 2*size * pose[:3, 2]
-        c = pos - size * pose[:3, 0] - size * pose[:3, 1] + 2*size * pose[:3, 2]
-        d = pos + size * pose[:3, 0] - size * pose[:3, 1] + 2*size * pose[:3, 2]
+        a = pos + size * pose[:3, 0] + size * pose[:3, 1] - 2*size * pose[:3, 2]
+        b = pos - size * pose[:3, 0] + size * pose[:3, 1] - 2*size * pose[:3, 2]
+        c = pos - size * pose[:3, 0] - size * pose[:3, 1] - 2*size * pose[:3, 2]
+        d = pos + size * pose[:3, 0] - size * pose[:3, 1] - 2*size * pose[:3, 2]
         
         poses_all  = np.array([a, b, c, d])
         centers_all.append(pos)
@@ -86,12 +107,12 @@ def visualize_poses(poses, size=0.1, bound=1, points=None):
     #     colors[:, 3] = 30 # transparent
     #     objects.append(trimesh.PointCloud(points, colors))
 
-    # plt.show()
+    plt.show()
     
 
 if __name__ == '__main__':
     
-    poses_path = './vis_poses_barf/autel_bicycle_mat.txt'
+    poses_path = './poses/cabin_mat.txt'
 
     poses = np.loadtxt(poses_path, dtype=np.float32).reshape(-1, 4, 4)
 
